@@ -4,7 +4,7 @@ from .parsers import (BiaffineDependencyParser,
                       BiaffineSemanticDependencyParser, CRF2oDependencyParser,
                       CRFConstituencyParser, CRFDependencyParser, Parser,
                       VIConstituencyParser, VIDependencyParser,
-                      VISemanticDependencyParser)
+                      VISemanticDependencyParser, TransferLearningBiaffineDependencyParser)
 
 __all__ = ['BiaffineDependencyParser',
            'CRFDependencyParser',
@@ -14,6 +14,7 @@ __all__ = ['BiaffineDependencyParser',
            'VIConstituencyParser',
            'BiaffineSemanticDependencyParser',
            'VISemanticDependencyParser',
+           'TransferLearningBiaffineDependencyParser',
            'Parser']
 
 __version__ = '1.1.2'
@@ -25,6 +26,7 @@ PARSER = {parser.NAME: parser for parser in [BiaffineDependencyParser,
                                              CRFConstituencyParser,
                                              VIConstituencyParser,
                                              BiaffineSemanticDependencyParser,
+                                             TransferLearningBiaffineDependencyParser,
                                              VISemanticDependencyParser]}
 
 SRC = {'github': 'https://github.com/yzhangcs/parser/releases/download',
