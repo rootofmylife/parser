@@ -21,7 +21,8 @@ def main():
     subparser = subparsers.add_parser('statistics', help='Statistic a treebanks.')
     subparser.add_argument('--input-file', '-fi', help='Input file to convert PoS tagset.')
     subparser.add_argument('--print-word', action='store_true', help='whether to print list of word.')
-    subparser.add_argument('--print-pos', action='store_true', help='whether to print list of pos.')
+    subparser.add_argument('--print-pos', action='store_true', help='whether to print list of pos tags.')
+    subparser.add_argument('--print-rel', action='store_true', help='whether to print list of relations.')
 
     parse(parser)
 
