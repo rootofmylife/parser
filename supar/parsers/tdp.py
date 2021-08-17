@@ -272,6 +272,22 @@ class TransferLearningBiaffineDependencyParser(Parser):
                                 tokenize=t.tokenize,
                                 fn=None if not isinstance(t, (GPT2Tokenizer, GPT2TokenizerFast)) else lambda x: ' '+x)
             WORD.vocab = t.get_vocab()
+
+            # TRANSFER LEARNING: add pos to features
+            TAG = Field('tags', bos=BOS)
+
+            # TRANSFER LEARNING: add bert to features
+            from transformers import (AutoTokenizer, GPT2Tokenizer,
+                                          GPT2TokenizerFast)
+            t = AutoTokenizer.from_pretrained(args.bert)
+            BERT = SubwordField('bert',
+                                pad=t.pad_token,
+                                unk=t.unk_token,
+                                bos=t.bos_token or t.cls_token,
+                                fix_len=args.fix_len,
+                                tokenize=t.tokenize,
+                                fn=None if not isinstance(t, (GPT2Tokenizer, GPT2TokenizerFast)) else lambda x: ' '+x)
+            BERT.vocab = t.get_vocab()
         else:
             WORD = Field('words', pad=PAD, unk=UNK, bos=BOS, lower=True)
             if 'tag' in args.feat:
