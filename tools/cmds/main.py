@@ -19,7 +19,8 @@ def main():
 
     # reorder word in sentence based on PoS
     subparser = subparsers.add_parser('reorder', help='Reorder word in a sentence based on PoS.')
-    subparser.add_argument('--folder', '-fi', help='Input folder.')
+    subparser.add_argument('--input-file', '-fi', help='Input file to reorder word.')
+    subparser.add_argument('--output-file', '-fo', default='./output.conllx', help='Output file.')
     subparser.add_argument('--rules', '-r', help='Rules to reorder word.')
 
     # statistic treebanks
