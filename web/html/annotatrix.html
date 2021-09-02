@@ -10,21 +10,11 @@
   <link rel="stylesheet" type="text/css" href="../css/style.css" />
   <link rel="stylesheet" type="text/css" href="../css/jquery.autocomplete.css" />
   <meta name="defaultLanguage" content="eng">
-  <meta name="availableLanguages" content="eng, cat, rus">
-  <script type="text/fluent" lang="rus">
-    err_upos_invalid = Не существует « { $tag } » в списке Универсальных тагов частей речи.
-      err_udeprel_invalid = Не существует « { $label } » в списке Универсальных зависимостей.
-      err_udep_leaf_node = Узлы с тегом части речи « { $tag } » обычно не должны иметь зависящих.
-  </script>
-  <script type="text/fluent" lang="cat">
-    err_upos_invalid = No es troba « { $tag } » a la llista d'etiquetes universals de categoria lèxica.
-      err_udeprel_invalid = No es troba « { $label } » a la llista de relacions universals.
-      err_udep_leaf_node = Els nodes amb l'etiqueta « { $tag } » normalment no hauríen de portar dependents.
-  </script>
+  <meta name="availableLanguages" content="eng">
   <script type="text/fluent" lang="eng">
     err_upos_invalid = « { $tag } » is not in the list of Universal part-of-speech tags.
-      err_udeprel_invalid = « { $label } » is not in the list of Universal dependency relations.
-      err_udep_leaf_node = Nodes with the « { $tag } » part-of-speech tag should normally not have dependents.
+    err_udeprel_invalid = « { $label } » is not in the list of Universal dependency relations.
+    err_udep_leaf_node = Nodes with the « { $tag } » part-of-speech tag should normally not have dependents.
   </script>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="https://d3js.org/d3-path.v1.min.js"></script>
@@ -34,202 +24,15 @@
 <body>
   <div id="content">
     <div id="modals">
-      <div class="modal custom-modal" id="upload-file-modal">
-        <div class="modal-dialog" role="document">
-          <form id="uploadform" class="modal-content" action="./upload" method="post" enctype="multipart/form-data">
-            <div class="modal-header">
-              <h5 class="modal-title">Upload corpus</h5>
-              <button type="button" class="close" aria-label="Close" name="close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
-            <div class="modal-body">
-              <span title="Select a file to upload to the server">
-                <u>Choose and upload file</u>
-                <input type="file" name="file" id="upload-filename" />
-              </span>
-
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" name="submit" class="btn btn-primary" disabled>Upload</button>
-              <button type="button" name="close" class="btn btn-secondary">Cancel</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="modal custom-modal" id="upload-url-modal">
-        <div class="modal-dialog" role="document">
-          <form class="modal-content" action="./upload" method="post" enctype="multipart/form-data">
-            <div class="modal-header">
-              <h5 class="modal-title">Upload corpus</h5>
-              <button type="button" class="close" aria-label="Close" name="close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
-            <div class="modal-body">
-              <span title="Select a file to upload to the server">
-                <u>Enter a URL</u>
-                <input name="url" id="load-from-url" />
-              </span>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" name="submit" class="btn btn-primary" disabled>Upload</button>
-              <button type="button" name="close" class="btn btn-secondary">Cancel</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
       <div class="modal custom-modal" id="fork-modal">
         <div class="modal-dialog" role="document">
-
         </div>
       </div>
-
     </div>
+
     <div id="upper">
       <div id="top-buttons-container" class="row">
         <div class="btn-toolbar col-xs-6 corpusNavigation" role="toolbar">
-          <div class="btn-group button-menu" id="dropdown-container">
-            <a class="btn btn-secondary dropdown-toggle" href="#" id="btnMenuDropdown">
-              <i class="fa fa-bars" title="Click to see more"></i>
-            </a>
-            <div class="dropdown-content menu-hidden">
-              <ul>
-                <li class="dropdown-group" id="dropdown-user">
-
-                  <span class="dropdown-group-title">
-                    User:
-                    <span id="username" class="not-logged-in disabled">
-                      (GitHub not configured)
-                    </span>
-                  </span>
-
-                  <a class="dropdown-group-item" href="#" name="chat">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-edit"></i>
-                      Chat
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                </li>
-                <hr>
-                <li class="dropdown-group">
-                  <span class="dropdown-group-title">
-                    Corpus
-                  </span>
-                  <a class="dropdown-group-item pinnable" href="#" name="save-corpus">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-save"></i>
-                      Save
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="upload-file">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-upload"></i>
-                      Upload
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="upload-url">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-code-branch"></i>
-                      Upload from GitHub
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="download-corpus">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-download"></i>
-                      Download
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="discard-corpus">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-trash"></i>
-                      Discard
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                </li>
-                <hr>
-                <li class="dropdown-group">
-                  <span class="dropdown-group-title">
-                    Export
-                  </span>
-                  <a class="dropdown-group-item pinnable export-button" href="#" name="export-as-latex">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-file-code"></i>
-                      as LaTeX
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable export-button" href="#" name="export-as-png">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-image"></i>
-                      as PNG
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable export-button" href="#" name="export-as-svg">
-                    <span class="dropdown-group-item-name">
-                      <i class="fa fa-layer-group"></i>
-                      as SVG
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                </li>
-                <hr>
-                <li class="dropdown-group">
-                  <span class="dropdown-group-title">
-                    Show
-                  </span>
-                  <a class="dropdown-group-item pinnable" href="#" name="show-labels">
-                    <span class="dropdown-group-item-name" title="Toggle show labels">
-                      <i class="fa fa-tag"></i>
-                      Labels
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="show-help">
-                    <span class="dropdown-group-item-name" title="Show help">
-                      <i class="fa fa-question-circle"></i>
-                      Help
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="show-settings">
-                    <span class="dropdown-group-item-name" title="Show settings">
-                      <i class="fa fa-cog"></i>
-                      Settings
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="show-table">
-                    <span class="dropdown-group-item-name" title="Toggle show table">
-                      <i class="fa fa-code"></i>
-                      Table
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                  <a class="dropdown-group-item pinnable" href="#" name="go-home">
-                    <span class="dropdown-group-item-name" title="Home page">
-                      <i class="fa fa-home"></i>
-                      Home page
-                    </span>
-                    <i class="pin fa fa-thumbtack" title="Pin to menu"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
           <div class="input-group">
             <div class="input-group-btn">
               <a class="btn btn-secondary" href="#" id="btnPrevSentence">
@@ -255,69 +58,8 @@
           </div>
 
           <div class="btn-group ml-sx-auto">
-            <a class="btn btn-secondary pinnable" href="#" name="save-corpus">
-              <i class="fa fa-save" title="Save corpus"></i>
-            </a>
-            <a class="btn btn-secondary pinnable" href="#" data-toggle="modal" data-target="#fileModal"
-              id="btnUploadCorpus" name="upload-file">
-              <i class="fa fa-upload" title="Import corpus"></i>
-            </a>
-            <a class="btn btn-secondary pinnable" href="#" name="upload-url">
-              <i class="fa fa-code-branch" title="Upload from GitHub"></i>
-            </a>
-            <a class="btn btn-secondary pinnable" id="btnExportCorpus" href="#" name="download-corpus">
-              <i class="fa fa-download" title="Download corpus"></i>
-            </a>
             <a class="btn btn-secondary pinnable" id="btnDiscardCorpus" href="#" name="discard-corpus">
               <i class="fa fa-trash" title="Discard corpus"></i>
-            </a>
-          </div>
-
-          <div class="btn-group">
-            <a class="btn btn-secondary pinnable export-button" href="#" name="export-as-latex">
-              <i class="fa fa-file-code" title="Export as LaTeX"></i>
-            </a>
-            <a class="btn btn-secondary pinnable export-button" href="#" name="export-as-png">
-              <i class="fa fa-image" title="Export as PNG"></i>
-            </a>
-            <a class="btn btn-secondary pinnable export-button" href="#" name="export-as-svg">
-              <i class="fa fa-layer-group" title="Export as SVG"></i>
-            </a>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary" id="btnUndo" disabled="true">
-              <i class="fa fa-undo" title="Undo"></i>
-            </button>
-            <button type="button" class="btn btn-primary" id="btnRedo" disabled="true">
-              <i class="fa fa-redo" title="Redo"></i>
-            </button>
-          </div>
-
-          <div class="btn-group">
-            <a class="btn btn-secondary pinnable" href="#" name="show-labels">
-              <i class="fa fa-tags" title="Show labels"></i>
-            </a>
-          </div>
-
-          <div class="btn-group">
-            <a class="btn btn-secondary pinnable" href="#" data-toggle="modal" data-target="#helpModal" id="btnHelp"
-              name="show-help">
-              <i class="fa fa-question-circle" title="Help"></i>
-            </a>
-          </div>
-
-          <div class="btn-group">
-            <a class="btn btn-secondary pinnable" href="#" id="btnHome" name="go-home">
-              <i class="fa fa-home" title="Home"></i>
-            </a>
-          </div>
-
-
-          <div class="btn-group">
-            <a class="btn btn-secondary pinnable" href="#" data-toggle="modal" data-target="#settingsModal"
-              id="btnSettings" name="show-settings">
-              <i class="fa fa-cog" title="Settings"></i>
             </a>
           </div>
 
@@ -363,11 +105,6 @@
             </li>
 
           </div>
-          <div class="btn-group ml-auto corpusNavigation">
-            <a class="btn btn-secondary pinnable" id="btnToggleTable" href="#" name="show-table">
-              <i class="fa fa-table" title="Table view"></i>
-            </a>
-          </div>
 
           <div class="btn-group ml-auto corpusNavigation">
             <a class="btn btn-secondary" id="btnToggleTextarea" href="#">
@@ -377,26 +114,10 @@
         </div>
       </div>
 
-      <div id="label-container" class="row">
-        <ul id="labels-horiz" class="labels-horiz">
-          <li id="label-clear-filter" class="label control">
-            <div class="label-text">
-              Clear filters
-            </div>
-          </li>
-          <li id="label-controller" class="label control">
-            <div class="label-text">
-              New label:
-              <input id="label-input" />
-            </div>
-          </li>
-        </ul>
-      </div>
-
       <div id="data-container">
         <textarea id="text-data" class="w-100" rows="20"
           placeholder="Paste text, CoNLL-U or VISL-CG formatted text here.">
-  </textarea>
+        </textarea>
         <div>
           <table id="table-data" tabindex="-1" class="table table-bordered table-sm w-100">
             <thead class="thead-default">
@@ -518,47 +239,6 @@
           </div>
         </div>
         <div class="status flowing">
-        </div>
-      </div>
-
-      <div id="chat">
-        <div id="chat-persist" class="btn pinnable">
-          <div class="chat-header">
-            <span>
-              Chat
-            </span>
-            <span class="chat-detail">
-              <i id="chat-available" class="fa fa-circle red">
-              </i>
-              <span id="currently-online-number">
-                0
-              </span>
-              online
-            </span>
-          </div>
-          <div class="chat-header-btn-group">
-            <a id="chat-minimize" class="btn btn-secondary" href="#">
-              <i class="fa fa-window-minimize">
-              </i>
-            </a>
-            <a id="chat-close" class="btn btn-secondary" href="#">
-              <i class="fa fa-times">
-              </i>
-            </a>
-          </div>
-        </div>
-        <div id="chat-expand" class="btn pinnable">
-          <div class="chat-content">
-            <ul id="chat-messages">
-            </ul>
-          </div>
-          <div class="chat-footer">
-            <input id="chat-input" placeholder="send a message" />
-            <a id="chat-send" class="btn btn-secondary" href="#">
-              <i class="fa fa-chevron-circle-right">
-              </i>
-            </a>
-          </div>
         </div>
       </div>
 
