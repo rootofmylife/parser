@@ -25,6 +25,10 @@ def main():
     subparser.add_argument('--train', default='data/ptb/train.conllx', help='path to train file')
     subparser.add_argument('--dev', default='data/ptb/dev.conllx', help='path to dev file')
     subparser.add_argument('--test', default='data/ptb/test.conllx', help='path to test file')
+    # Add new cmds for transfer learning
+    subparser.add_argument('--transfer', default='data/ptb/transfer.conllx', help='path to transferred treebanks')
+    subparser.add_argument('--transfer-bert', default='bert-base-multilingual-cased', help='which BERT model to use')
+    # End `Add new cmds for transfer learning`
     subparser.add_argument('--embed', default='data/glove.6B.100d.txt', help='path to pretrained embeddings')
     subparser.add_argument('--unk', default='unk', help='unk token in pretrained embeddings')
     subparser.add_argument('--n-embed', default=100, type=int, help='dimension of embeddings')

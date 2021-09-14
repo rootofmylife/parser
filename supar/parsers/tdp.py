@@ -5,7 +5,7 @@ import os
 import torch
 import torch.nn as nn
 from supar.models import (TransferLearningBiaffineDependencyModel)
-from supar.parsers.parser import Parser
+from supar.parsers.tdp_parser import TransferParser
 from supar.utils import Config, Dataset, Embedding
 from supar.utils.common import BOS, PAD, UNK
 from supar.utils.field import Field, RawField, SubwordField
@@ -17,7 +17,7 @@ from supar.utils.transform import CoNLL
 logger = get_logger(__name__)
 
 
-class TransferLearningBiaffineDependencyParser(Parser):
+class TransferLearningBiaffineDependencyParser(TransferParser):
     r"""
     The implementation of Biaffine Dependency Parser :cite:`dozat-etal-2017-biaffine`.
     """
@@ -30,6 +30,7 @@ class TransferLearningBiaffineDependencyParser(Parser):
 
         self.TAG = self.transform.CPOS
         self.ARC, self.REL = self.transform.HEAD, self.transform.DEPREL
+        self.TRANSFER_ARC, self.TRANSFER_REL = self.transfer.HEAD, self.transfer.DEPREL
 
     def train(self, train, dev, test, buckets=32, batch_size=5000, update_steps=1,
               punct=False, tree=False, proj=False, partial=False, verbose=True, **kwargs):
@@ -273,14 +274,11 @@ class TransferLearningBiaffineDependencyParser(Parser):
                                 fn=None if not isinstance(t, (GPT2Tokenizer, GPT2TokenizerFast)) else lambda x: ' '+x)
             WORD.vocab = t.get_vocab()
 
-            # TRANSFER LEARNING: add pos to features
-            TAG = Field('tags', bos=BOS)
-            # END TRANSFER LEARNING
+            TAG = Field('tags', bos=BOS) # add pos to features
 
-            # TRANSFER LEARNING: add bert to features
             from transformers import (AutoTokenizer, GPT2Tokenizer,
                                           GPT2TokenizerFast)
-            t = AutoTokenizer.from_pretrained(args.bert)
+            t = AutoTokenizer.from_pretrained(args.bert) # add bert to features
             BERT = SubwordField('bert',
                                 pad=t.pad_token,
                                 unk=t.unk_token,
@@ -289,6 +287,17 @@ class TransferLearningBiaffineDependencyParser(Parser):
                                 tokenize=t.tokenize,
                                 fn=None if not isinstance(t, (GPT2Tokenizer, GPT2TokenizerFast)) else lambda x: ' '+x)
             BERT.vocab = t.get_vocab()
+
+            # TRANSFER LEARNING
+            t2 = AutoTokenizer.from_pretrained(args.transfer_bert)
+            TRANSFER_WORD = SubwordField('words',
+                                pad=t2.pad_token,
+                                unk=t2.unk_token,
+                                bos=t2.bos_token or t2.cls_token,
+                                fix_len=args.fix_len,
+                                tokenize=t2.tokenize,
+                                fn=None if not isinstance(t2, (GPT2Tokenizer, GPT2TokenizerFast)) else lambda x: ' '+x)
+            TRANSFER_WORD.vocab = t2.get_vocab()
             # END TRANSFER LEARNING
         else:
             WORD = Field('words', pad=PAD, unk=UNK, bos=BOS, lower=True)
@@ -317,19 +326,26 @@ class TransferLearningBiaffineDependencyParser(Parser):
         REL = Field('rels', bos=BOS)
         transform = CoNLL(FORM=(WORD, TEXT, CHAR, ELMO, BERT), CPOS=TAG, HEAD=ARC, DEPREL=REL)
 
+        # TRANSFER LEARNING: build a CoNLL field
+        TRANSFER_TEXT = RawField('texts')
+        TRANSFER_ARC = Field('arcs', bos=BOS, use_vocab=False, fn=CoNLL.get_arcs)
+        TRANSFER_REL = Field('rels', bos=BOS)
+        transfer = CoNLL(FORM=(TRANSFER_WORD, TRANSFER_TEXT, CHAR, ELMO, BERT), CPOS=None, HEAD=TRANSFER_ARC, DEPREL=TRANSFER_REL)
+
         train = Dataset(transform, args.train)
+        transfer_train = Dataset(transfer, args.transfer) # TRANSFER LEARNING: as same as `train = Dataset(transform, args.train)`
         if args.encoder == 'lstm':
             WORD.build(train, args.min_freq, (Embedding.load(args.embed, args.unk) if args.embed else None))
-            if TAG is not None:
-                TAG.build(train)
+            # if TAG is not None:
+            #     TAG.build(train)
             if CHAR is not None:
                 CHAR.build(train)
 
-        # TRANSFER LEARNING: add pos to features
-        TAG.build(train)
-         # END TRANSFER LEARNING
+        if TAG is not None:
+            TAG.build(train)
 
         REL.build(train)
+        TRANSFER_REL.build(transfer_train)
         args.update({
             'n_words': len(WORD.vocab) if args.encoder != 'lstm' else WORD.vocab.n_init,
             'n_rels': len(REL.vocab),
@@ -341,10 +357,10 @@ class TransferLearningBiaffineDependencyParser(Parser):
             'unk_index': WORD.unk_index,
             'bos_index': WORD.bos_index
         })
-        logger.info(f"{transform}")
+        logger.info(f"{transform}\n{transfer}")
 
         logger.info("Building the model")
         model = cls.MODEL(**args).load_pretrained(WORD.embed if hasattr(WORD, 'embed') else None).to(args.device)
         logger.info(f"{model}\n")
 
-        return cls(args, model, transform)
+        return cls(args, model, transform, transfer)
