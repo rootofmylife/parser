@@ -26,7 +26,6 @@ PARSER = {parser.NAME: parser for parser in [BiaffineDependencyParser,
                                              CRFConstituencyParser,
                                              VIConstituencyParser,
                                              BiaffineSemanticDependencyParser,
-                                             TransferLearningBiaffineDependencyParser,
                                              VISemanticDependencyParser]}
 
 SRC = {'github': 'https://github.com/yzhangcs/parser/releases/download',

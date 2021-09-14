@@ -22,7 +22,7 @@ class TransferLearningBiaffineDependencyParser(TransferParser):
     The implementation of Biaffine Dependency Parser :cite:`dozat-etal-2017-biaffine`.
     """
 
-    NAME = 'biaffine-dependency'
+    NAME = 'transfer-dependency'
     MODEL = TransferLearningBiaffineDependencyModel
 
     def __init__(self, *args, **kwargs):
