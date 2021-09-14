@@ -40,22 +40,20 @@ class TransferParser(object):
         if dist.is_initialized():
             batch_size = batch_size // dist.get_world_size()
 
-        # TRANSFER LEARNING
-        logger.info("Loading the transfer data")
-        add = Dataset(self.transfer, args.transfer, **args).build(batch_size, buckets, True, dist.is_initialized())
-
         logger.info("Loading the data")
-        train = Dataset(self.transform, args.train, **args).build(batch_size, buckets, True, dist.is_initialized())
+        train = Dataset(self.transform, args.train, **args)
+        add = Dataset(self.transfer, args.transfer, **args) # load additional data then combine with train data
+        combine = torch.utils.data.ConcatDataset([train, add]).build(batch_size, buckets, True, dist.is_initialized())
         dev = Dataset(self.transform, args.dev).build(batch_size, buckets)
         test = Dataset(self.transform, args.test).build(batch_size, buckets)
-        logger.info(f"\n{'train:':6} {train}\n{'dev:':6} {dev}\n{'test:':6} {test}\n{'transform:':6} {add}\n")
+        logger.info(f"\n{'train:':6} {combine}\n{'dev:':6} {dev}\n{'test:':6} {test}\n{'transform:':6} {add}\n")
 
         if args.encoder == 'lstm':
             self.optimizer = Adam(self.model.parameters(), args.lr, (args.mu, args.nu), args.eps, args.weight_decay)
             self.scheduler = ExponentialLR(self.optimizer, args.decay**(1/args.decay_steps))
         else:
             from transformers import AdamW, get_linear_schedule_with_warmup
-            steps = (len(train.loader) + len(add.loader)) * epochs // args.update_steps
+            steps = len(combine.loader) * epochs // args.update_steps
             self.optimizer = AdamW(
                 [{'params': c.parameters(), 'lr': args.lr * (1 if n == 'encoder' else args.lr_rate)}
                  for n, c in self.model.named_children()],
@@ -78,8 +76,7 @@ class TransferParser(object):
             start = datetime.now()
 
             logger.info(f"Epoch {epoch} / {args.epochs}:")
-            self._train(train.loader)
-            self._train(add.loader) # train on addtional data
+            self._train(combine.loader)
             loss, dev_metric = self._evaluate(dev.loader)
             logger.info(f"{'dev:':5} loss: {loss:.4f} - {dev_metric}")
             loss, test_metric = self._evaluate(test.loader)
