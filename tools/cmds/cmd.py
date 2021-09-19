@@ -6,7 +6,7 @@ from tools.utils import Config
 from tools.processor.convert import converter
 from tools.processor.statistics import stats
 from tools.processor.concat import merge
-from tools.processor.reorder import wordorder
+from tools.processor.undash import undash
 
 logger = logging.getLogger('tools')
 
@@ -23,5 +23,5 @@ def parse(parser):
         stats(**args)
     elif args.mode == 'concat':
         merge(**args)
-    elif args.mode == 'reorder':
-        wordorder(**args)
+    elif args.mode == 'undash':
+        undash(**args)

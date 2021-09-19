@@ -3,10 +3,19 @@
 from tools.utils import Config
 
 def permute(lines):
-    lines = '\n'.join(lines)
+    pre_lines = []
+    for line in lines:
+        l = line.split('\t')
+        l[1] = l[1].replace('_', ' ')
+        if len(l[1].strip()) == 0:
+            print(line)
+        nl = '\t'.join(l)
+        pre_lines.append(nl)
+
+    lines = '\n'.join(pre_lines)
     return lines + '\n'
 
-def wordorder(**kwargs):
+def undash(**kwargs):
     args = Config(**locals())
 
     with open(args.output_file, 'w') as fout:

@@ -3,6 +3,6 @@
 from .convert import converter
 from .statistics import stats
 from .concat import merge
-from .reorder import wordorder
+from .undash import undash
 
-__all__ = ['converter', 'stats', 'merge', 'wordorder']
+__all__ = ['converter', 'stats', 'merge', 'undash']

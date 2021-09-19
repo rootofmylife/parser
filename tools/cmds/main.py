@@ -17,11 +17,10 @@ def main():
     subparser = subparsers.add_parser('concat', help='Concatenate all files into one.')
     subparser.add_argument('--folder', '-fol', help='Input folder.')
 
-    # reorder word in sentence based on PoS
-    subparser = subparsers.add_parser('reorder', help='Reorder word in a sentence based on PoS.')
-    subparser.add_argument('--input-file', '-fi', help='Input file to reorder word.')
+    # remove dash of word in sentence
+    subparser = subparsers.add_parser('undash', help='Remove dash of word in a sentence.')
+    subparser.add_argument('--input-file', '-fi', help='Input file.')
     subparser.add_argument('--output-file', '-fo', default='./output.conllx', help='Output file.')
-    subparser.add_argument('--rules', '-r', help='Rules to reorder word.')
 
     # statistic treebanks
     subparser = subparsers.add_parser('statistics', help='Statistic a treebanks.')
