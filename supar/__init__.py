@@ -4,7 +4,8 @@ from .parsers import (BiaffineDependencyParser,
                       BiaffineSemanticDependencyParser, CRF2oDependencyParser,
                       CRFConstituencyParser, CRFDependencyParser, Parser,
                       VIConstituencyParser, VIDependencyParser,
-                      VISemanticDependencyParser)
+                      VISemanticDependencyParser,
+                      LabelAttentionDependencyParser)
 
 __all__ = ['BiaffineDependencyParser',
            'CRFDependencyParser',
@@ -14,6 +15,7 @@ __all__ = ['BiaffineDependencyParser',
            'VIConstituencyParser',
            'BiaffineSemanticDependencyParser',
            'VISemanticDependencyParser',
+           'LabelAttentionDependencyParser',
            'Parser']
 
 __version__ = '1.1.2'
