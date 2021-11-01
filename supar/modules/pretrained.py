@@ -46,12 +46,12 @@ class TransformerEmbedding(nn.Module):
         self.n_layers = n_layers or self.bert.config.num_hidden_layers
         self.hidden_size = self.bert.config.hidden_size
         self.n_out = n_out or self.hidden_size
-        self.stride = stride
         self.pooling = pooling
         self.pad_index = pad_index
         self.dropout = dropout
         self.requires_grad = requires_grad
         self.max_len = int(max(0, self.bert.config.max_position_embeddings) or 1e12) - 2
+        self.stride = min(stride, self.max_len)
 
         self.tokenizer = AutoTokenizer.from_pretrained(model)
 
@@ -124,7 +124,7 @@ class ELMoEmbedding(nn.Module):
         n_out (int):
             The requested size of the embeddings. If 0, uses the default size of ELMo outputs. Default: 0.
         dropout (float):
-            The dropout to be applied to the ELMo representations. Default: 0.5.
+            The dropout ratio for the ELMo layer. Default: 0.
         requires_grad (bool):
             If ``True``, the model parameters will be updated together with the downstream task. Default: ``False``.
     """
@@ -161,7 +161,6 @@ class ELMoEmbedding(nn.Module):
         self.dropout = dropout
         self.requires_grad = requires_grad
 
-        self.scalar_mix = ScalarMix(self.elmo._elmo_lstm.num_layers)
         self.projection = nn.Linear(self.hidden_size, self.n_out, False) if self.hidden_size != n_out else nn.Identity()
 
     def __repr__(self):
@@ -182,9 +181,7 @@ class ELMoEmbedding(nn.Module):
                 ELMo embeddings of shape ``[batch_size, seq_len, n_out]``.
         """
 
-        x = self.elmo._elmo_lstm(chars)['activations']
-        x = self.scalar_mix(x)
-        x = self.projection(x)
+        x = self.projection(self.elmo(chars)['elmo_representations'][0])
         if not self.bos_eos[0]:
             x = x[:, 1:]
         if not self.bos_eos[1]:

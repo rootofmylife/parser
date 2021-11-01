@@ -2,34 +2,34 @@
 Variational Inference
 ================================================================
 
-.. currentmodule:: supar.structs.variational_inference
+.. currentmodule:: supar.structs.vi
 
-MFVIDependency
+DependencyMFVI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: MFVIDependency
+.. autoclass:: DependencyMFVI
     :members:
 
-LBPDependency
+DependencyLBP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: LBPDependency
+.. autoclass:: DependencyLBP
     :members:
 
-MFVIConstituency
+ConstituencyMFVI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: MFVIConstituency
+.. autoclass:: ConstituencyMFVI
     :members:
 
-LBPConstituency
+ConstituencyLBP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: LBPConstituency
+.. autoclass:: ConstituencyLBP
     :members:
 
-MFVISemanticDependency
+SemanticDependencyMFVI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: MFVISemanticDependency
+.. autoclass:: SemanticDependencyMFVI
     :members:
 
-LBPSemanticDependency
+SemanticDependencyLBP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: LBPSemanticDependency
+.. autoclass:: SemanticDependencyLBP
     :members:

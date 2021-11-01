@@ -6,5 +6,8 @@ Structs
 .. toctree::
    :maxdepth: 2
 
-   treecrf
-   variational_inference
+   dist
+   semiring
+   tree
+   linearchain
+   vi
